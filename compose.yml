@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   fastapi:
+    image: mytherapycoding/fastapi-webserver:latest
     build:
       context: .
       dockerfile: Dockerfile
