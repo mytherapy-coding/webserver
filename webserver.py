@@ -7,32 +7,33 @@ import markdown2
 app = FastAPI()
 
 # Mount the static folder to serve static files
-app.mount("/", StaticFiles(directory="static"), name="static")
+#app.mount("/", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/{filename:path}")
 async def read_file(filename: str):
-
+    print(filename)
     # Path to the file
-    file_path = Path("") / filename
-
+    filepath = Path("static") / filename
     # Check if the file exists
-    if file_path.is_file():
-        # If the file is a Markdown file, convert it to HTML
-        if file_path.suffix == ".md":
-            with file_path.open("r", encoding="utf-8") as markdown_file:
-                markdown_content = markdown_file.read()
-                html_content = markdown2.markdown(markdown_content)
-                return HTMLResponse(content=html_content)
-        # If the file is an image file, return it as an image response
-        elif file_path.suffix in [".jpg", ".jpeg", ".png", ".gif"]:
-            return FileResponse(str(file_path))
-        # For other file types, return them directly
-        else:
-            with file_path.open("r", encoding="utf-8") as file:
-                return HTMLResponse(content=file.read())
-    else:
-        raise HTTPException(status_code=404, detail="File not found")
+    if filepath.is_file():
+        return FileResponse(str(filepath))
+    
+    # If the file is a Markdown file, convert it to HTML
+    filepath = Path("static") / f'{filename}.html'
+    if filepath.is_file():
+        return FileResponse(str(filepath))
+    
+    filepath = Path("static") / f'{filename}.md'
+    if filepath.is_file():
+        print('found md')
+        with filepath.open("r", encoding="utf-8") as markdown_file:
+            markdown_content = markdown_file.read()
+            html_content = markdown2.markdown(markdown_content)
+            return HTMLResponse(content=html_content)
+        
+    # If the file is an image file, return it as an image response    
+    raise HTTPException(status_code=404, detail="File not found")
 
 
 @app.get("/")
