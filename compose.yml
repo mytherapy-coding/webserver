@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "1235:1235"
+    volumes:
+      - ./static:/app/static
+    environment:
+      - PYTHONUNBUFFERED=1
