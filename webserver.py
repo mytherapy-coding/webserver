@@ -12,6 +12,8 @@ app = FastAPI()
 
 @app.get("/{filename:path}")
 async def read_file(filename: str):
+    if not filename or filename == '/':
+        filename = 'index.html'
     print(filename)
     # Path to the file
     filepath = Path("static") / filename
